@@ -10,22 +10,27 @@ import type { ArticleItem } from "@/types"
 
 // 获取 articles 文件夹的绝对路径
 // process.cwd() 返回当前工作目录，path.join() 将路径片段连接成完整路径
-const articlesDirectory = path.join(process.cwd(), "articles")
+const baseArticlesDirectory = path.join(process.cwd(), "articles")
 
 /**
  * 获取所有文章并按日期排序
  * @returns {ArticleItem[]} 排序后的文章数组
  */
-const getSortedArticles = (): ArticleItem[] => {
+const getSortedArticles = (lang: string): ArticleItem[] => {
     
-    const fileNames = fs.readdirSync(articlesDirectory) // 读取 articles 目录下的所有文件名
+    const articlesDirectory = path.join(baseArticlesDirectory, lang) // 读取 articles 目录下的所有文件名
+
+    if (!fs.existsSync(articlesDirectory)) {
+        return []
+    }
+
+    const fileNames = fs.readdirSync(articlesDirectory)
 
     // 处理每个 .md 文件，提取文章的基本信息
     const allArticlesData = fileNames.map((fileName) => { 
         const id = fileName.replace(/\.md$/, "")                // 去掉文件扩展名 .md，作为文章的唯一标识符
         const fullPath = path.join(articlesDirectory, fileName) // 构建文件的完整路径
         const fileContents = fs.readFileSync(fullPath, "utf8")  // 读取文件内容（UTF-8 编码）
-
         const matterResult = matter(fileContents) // 使用 gray-matter 解析 Markdown 文件，分离元数据和正文内容
 
         return {
@@ -57,8 +62,8 @@ const getSortedArticles = (): ArticleItem[] => {
  * 将文章按分类进行分组
  * @returns {Record<string, ArticleItem[]>} 以分类名为键，文章数组为值的对象
  */
-export const getCategorizedArticles = (): Record<string, ArticleItem[]> => {
-    const sortedArticles = getSortedArticles() // 获取排序后的所有文章
+export const getCategorizedArticles = (lang: string): Record<string, ArticleItem[]> => {
+    const sortedArticles = getSortedArticles(lang) // 获取排序后的所有文章
     const categorizedArticles: Record<string, ArticleItem[]> = {} // 创建空的分类对象
 
     // 遍历每篇文章，按分类进行分组
@@ -77,8 +82,8 @@ export const getCategorizedArticles = (): Record<string, ArticleItem[]> => {
  * @param {string} id 文章的唯一标识符
  * @returns {Promise} 包含文章完整信息的 Promise 对象
  */
-export const getArticleData = async (id: string) => {
-    const fullPath = path.join(articlesDirectory, `${id}.md`) // 构建文章文件的完整路径
+export const getArticleData = async (lang: string, id: string) => {
+    const fullPath = path.join(baseArticlesDirectory, lang, `${id}.md`)
     const fileContents = fs.readFileSync(fullPath, "utf-8")   // 读取文件内容
     const matterResult = matter(fileContents)                 // 解析 Markdown 文件，分离元数据和正文
 

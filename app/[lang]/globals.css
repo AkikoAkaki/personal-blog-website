@@ -1,8 +1,11 @@
+/* 引入 Tailwind CSS 的基础、组件和功能样式。 */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* 在 'utilities' 层中定义自定义功能类。 */
 @layer utilities {
+  /* 自定义字体类，通过 CSS 变量应用在 layout.tsx 中定义的字体。 */
   .font-cormorantGaramond {
     font-family: var(--font-cormorant-garamond), serif;
   }
@@ -11,14 +14,22 @@
   }
 }
 
+/* 全局重置链接的默认下划线。 */
 a {
   text-decoration: none;
 }
 
+/*
+ * 定义 .article 组件的基础样式，用于包裹从 Markdown 转换来的 HTML 内容。
+ * 使用 @apply 将多个工具类组合成一个可复用的 CSS 类。
+ */
 .article {
   @apply flex flex-col gap-3 font-poppins text-lg tracking-wide mb-20;
 }
 
+/* * 为 .article 容器内部由 Markdown 生成的各种 HTML 标签定义统一样式。
+ * 这种方式非常适合为无法直接添加 class 的内容（如 remark 的输出）提供样式。
+ */
 .article > h1 {
   @apply font-cormorantGaramond text-4xl text-center tracking-tight;
 }
@@ -31,7 +42,7 @@ a {
   @apply font-cormorantGaramond text-2xl text-center tracking-tight;
 }
 
-.article > ol{
+.article > ol {
   @apply list-decimal flex flex-col mx-10 gap-2;
 }
 
