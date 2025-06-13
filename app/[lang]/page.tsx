@@ -26,6 +26,7 @@ const HomePage = ({ params }: { params: { lang: string } }) => {
             <ArticleItemList
               category={categoryName} // category: 传入当前分类的名称。
               articles={articles[categoryName]} // articles: 传入该分类下的文章数组。
+              lang={params.lang} // lang: 传入当前语言。
               key={categoryName} // key: 使用分类名作为 React 列表渲染的唯一标识。
             />
           ))}

@@ -5,13 +5,14 @@ import type { ArticleItem } from "@/types"; // 文章条目的 TypeScript 类型
 interface Props {
     category: string; // 分类标题。
     articles: ArticleItem[]; // 该分类下的文章列表。
+    lang: string; // 语言。
 }
 
 /**
  * 渲染单个文章分类及其下的文章链接列表。
  * @param {Props} props - 包含分类名和文章数组。
  */
-const ArticleItemList = ({ category, articles }: Props) => {
+const ArticleItemList = ({ category, articles, lang }: Props) => {
     return (
         // 单个分类区块的根容器。
         <div className="flex flex-col gap-2">
@@ -28,7 +29,7 @@ const ArticleItemList = ({ category, articles }: Props) => {
                 {/* 遍历文章数组，为每篇文章生成一个链接 */}
                 {articles.map((article) => (
                     <Link
-                        href={`/${article.id}`} // 指向文章详情页的动态路由。
+                        href={`/${lang}/${article.id}`} // 指向文章详情页的动态路由。
                         key={article.id} // React 列表渲染优化所需的 key。
                         className="font-poppins text-lg text-black hover:text-[#3d7fdc]" // 文章链接的样式和悬停效果。
                     >
