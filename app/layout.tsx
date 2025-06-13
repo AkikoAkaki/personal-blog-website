@@ -4,14 +4,14 @@ import "./globals.css";
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-cormorant-garamond",
-  weight: "400",
 });
 
 const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
-  weight: ["400", "600"],
 });
 
 export const metadata: Metadata = {
@@ -21,13 +21,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+  }) {
   return (
     <html lang="en">
-      <body
-        className={`${cormorantGaramond.variable} ${poppins.variable} antialiased`}
+      <body 
+        className={`${cormorantGaramond.variable} ${poppins.variable}`}
+        suppressHydrationWarning={true}
       >
         {children}
       </body>
