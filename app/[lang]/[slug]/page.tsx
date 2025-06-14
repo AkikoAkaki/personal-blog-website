@@ -1,24 +1,27 @@
 import Link from "next/link"; // 导入 Next.js 的 Link 组件，用于客户端导航。
 import { ArrowLeftIcon } from "@heroicons/react/24/solid"; // 从 Heroicons 图标库导入左箭头图标。
 import { getArticleData } from "@/lib/articles"; // 导入用于获取单篇文章数据的函数。
+import { getDictionary } from "@/lib/dictionaries"; // 导入用于获取字典数据的函数。
 
 /**
  * Article 页面是一个动态路由页面，用于显示单篇文章的内容。
  * 这是一个异步的服务端组件 (Server Component)，可以在渲染前直接获取数据。
  *
  * @param {object} props - 包含动态路由参数的 props。
- * @param {{ slug: string }} props.params - Next.js 传入的路由参数，slug 即文章的 ID。
+ * @param {{ slug: string, lang: string }} props.params - Next.js 传入的路由参数，slug 即文章的 ID。
  */
-const Article = async ({ params }: { params: { slug: string, lang: string } }) => {
-    const articleData = await getArticleData(params.slug, params.lang); // 根据 URL 中的 slug 参数，异步获取文章的标题、HTML 内容等数据。
+const Article = async ({ params }: { params: Promise<{ slug: string, lang: string }> }) => {
+    const { slug, lang } = await params; // 在Next.js 15中，params是一个Promise，需要await
+    const articleData = await getArticleData(slug, lang); // 根据 URL 中的 slug 参数，异步获取文章的标题、HTML 内容等数据。
+    const dict = getDictionary(lang);
 
     return (
         <section className="mx-auto w-10/12 md:w-1/2 mt-20 flex flex-col gap-5">
             {/* 页面顶部导航区，包含返回链接和文章日期 */}
             <div className="flex justify-between font-poppins mb-8">
-                <Link href={"/${params.lang"} className="flex flex-row gap-2 place-items-center text-gray-600 hover:text-[#3d7fdc] transition-colors">
+                <Link href={`/${lang}`} className="flex flex-row gap-2 place-items-center text-gray-600 hover:text-[#3d7fdc] transition-colors">
                     <ArrowLeftIcon width={20} />
-                    <p>back to home</p>
+                    <p>{dict.back_to_home}</p>
                 </Link>
                 <p className="text-gray-500">{articleData.date.toString()}</p>
             </div>

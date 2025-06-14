@@ -5,8 +5,9 @@ import { getCategorizedArticles } from "@/lib/articles"; // 导入数据处理�
  * HomePage 是博客的主页。
  * 它在服务端获取所有文章，按分类进行组织，并渲染出文章列表。
  */
-const HomePage = ({ params }: { params: { lang: string } }) => {
-  const articles = getCategorizedArticles(params.lang); // 调用函数，获取按分类组织好的文章数据。
+const HomePage = async ({ params }: { params: Promise<{ lang: string }> }) => {
+  const { lang } = await params; // 在Next.js 15中，params是一个Promise，需要await
+  const articles = getCategorizedArticles(lang); // 调用函数，获取按分类组织好的文章数据。
 
   return (
     <section className="mx-auto w-11/12 md:w-1/2 mt-20 flex flex-col gap-16 mb-20">
@@ -26,7 +27,7 @@ const HomePage = ({ params }: { params: { lang: string } }) => {
             <ArticleItemList
               category={categoryName} // category: 传入当前分类的名称。
               articles={articles[categoryName]} // articles: 传入该分类下的文章数组。
-              lang={params.lang} // lang: 传入当前语言。
+              lang={lang} // lang: 传入当前语言。
               key={categoryName} // key: 使用分类名作为 React 列表渲染的唯一标识。
             />
           ))}
