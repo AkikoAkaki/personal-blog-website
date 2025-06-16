@@ -31,15 +31,15 @@ a {
  * 这种方式非常适合为无法直接添加 class 的内容（如 remark 的输出）提供样式。
  */
 .article > h1 {
-  @apply font-cormorantGaramond text-6xl tracking-tight;
-}
-
-.article > h2 {
   @apply font-cormorantGaramond text-5xl tracking-tight;
 }
 
-.article > h3 {
+.article > h2 {
   @apply font-cormorantGaramond text-4xl tracking-tight;
+}
+
+.article > h3 {
+  @apply font-cormorantGaramond text-3xl tracking-tight;
 }
 
 .article > p {
