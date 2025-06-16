@@ -10,6 +10,8 @@ date: "2025-01-14"
 
 ---
 
+> The difference between water and watercolor is color, even when the color is white. This is the softly, precisely articulated nuances I’ve long admired in Olivia Giacobetti’s perfumes, exercised in her smooth, aromatic masterpieces for the Parisian hotel Costes and epitomized in her own tragically discontinued line IUNX. She coaxes poetry out of paleness, with a penchant for dewy, gestural compositions including Hiris for Hermes, the figs she’s made for Diptyque and L’Artisan, and the utterly unique En Passant for Frederic Malle—which of her broad oeuvre, perhaps most presages some of her latest projects, a collection of new, loosely ‘pour homme’ scents for Zara. 
+
 ## The Independence, Multiplicity, Ambiguity, and Fluidity of Poetry
 
 The attitude towards poetry should not be one of forcibly fitting it into a framework of "knowledge." Grasping poetry requires a more open attitude, one that maintains a critical distance from any knowledge system and cultural background, an attitude that deconstructs regularized, systematized conceptions of poetics.

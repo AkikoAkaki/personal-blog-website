@@ -24,26 +24,26 @@ a {
  * 使用 @apply 将多个工具类组合成一个可复用的 CSS 类。
  */
 .article {
-  @apply flex flex-col gap-6 font-cormorantGaramond text-lg mb-20;
+  @apply flex flex-col gap-6 font-lora text-lg mb-20;
 }
 
 /* * 为 .article 容器内部由 Markdown 生成的各种 HTML 标签定义统一样式。
  * 这种方式非常适合为无法直接添加 class 的内容（如 remark 的输出）提供样式。
  */
 .article > h1 {
-  @apply font-cormorantGaramond text-4xl text-center tracking-tight;
+  @apply font-cormorantGaramond text-6xl tracking-tight;
 }
 
 .article > h2 {
-  @apply font-cormorantGaramond text-3xl text-center tracking-tight;
+  @apply font-cormorantGaramond text-5xl tracking-tight;
 }
 
 .article > h3 {
-  @apply font-cormorantGaramond text-2xl text-center tracking-tight;
+  @apply font-cormorantGaramond text-4xl tracking-tight;
 }
 
 .article > p {
-    @apply leading-relaxed mb-6;
+    @apply leading-relaxed;
 }
 
 .article > ol {
@@ -55,13 +55,18 @@ a {
 }
 
 .article > pre {
-  @apply bg-neutral-950 text-neutral-50 p-5 overflow-scroll;
+  @apply bg-neutral-100 text-neutral-800 p-5 overflow-scroll font-mono;
 }
 
 .article > blockquote {
-  @apply pl-5 italic border-l-2 border-neutral-600 border-opacity-40;
+  @apply pl-10 text-neutral-600;
 }
 
 .article > p > img {
   @apply w-1/2 mx-auto;
+}
+
+.article strong,
+.article b {
+  @apply font-medium;
 }

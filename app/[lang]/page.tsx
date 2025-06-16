@@ -14,7 +14,7 @@ const HomePage = async ({ params }: { params: Promise<{ lang: string }> }) => {
       {/* 博客标题区域，使用 Tailwind CSS 工具类来定义字体、大小、字重和边距。 */}
       <header className="font-cormorantGaramond text-neutral-900 text-center">
         <h1 className="text-[100px]" style={{ fontFamily: 'Cormorant Garamond, serif', fontWeight: 300 }}>
-          Aki's Blog
+          Aki&apos;s Blog
         </h1>
       </header>
 

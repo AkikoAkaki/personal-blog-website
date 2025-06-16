@@ -1,4 +1,4 @@
-const dictionaries = {
+const dictionaries: Record<string, { back_to_home: string }> = {
     en: {
         back_to_home: "back to home",
     },
@@ -11,6 +11,5 @@ const dictionaries = {
 };
 
 export const getDictionary = (lang: string) => {
-    // @ts-ignore
     return dictionaries[lang] ?? dictionaries.en;
 };
