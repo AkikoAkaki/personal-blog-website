@@ -15,7 +15,7 @@ interface Props {
 const ArticleItemList = ({ category, articles, lang }: Props) => {
     return (
         // 单个分类区块的根容器。
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-4">
             {/* 分类标题 */}
             <h2
                 className="font-cormorantGaramond text-[2.5rem] font-light mb-2"
@@ -25,7 +25,7 @@ const ArticleItemList = ({ category, articles, lang }: Props) => {
             </h2>
 
             {/* 文章链接列表 */}
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-2">
                 {/* 遍历文章数组，为每篇文章生成一个链接 */}
                 {articles.map((article) => (
                     <Link
