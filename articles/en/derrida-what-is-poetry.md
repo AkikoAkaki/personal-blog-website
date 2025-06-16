@@ -4,7 +4,7 @@ category: "note"
 date: "2025-01-14"
 ---
 
-[Derrida: What is Poetry?](https://ptext.nju.edu.cn/c4/82/c12242a246914/page.htm) #study/humanity
+[Derrida: What is Poetry?](https://ptext.nju.edu.cn/c4/82/c12242a246914/page.htm)
 
 *Translated from Jacques Derrida, Che cos'è la poesia?, trans. Peggy Kamuf, in A Derrida Reader: Between the Blinds, ed. Peggy Kamuf, New York: Columbia University Press, 1991, pp. 221-237.*
 

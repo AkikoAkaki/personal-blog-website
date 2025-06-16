@@ -12,7 +12,8 @@ import { getDictionary } from "@/lib/dictionaries"; // 导入用于获取字典�
  */
 const Article = async ({ params }: { params: Promise<{ slug: string, lang: string }> }) => {
     const { slug, lang } = await params; // 在Next.js 15中，params是一个Promise，需要await
-    const articleData = await getArticleData(slug, lang); // 根据 URL 中的 slug 参数，异步获取文章的标题、HTML 内容等数据。
+    const decodedSlug = decodeURIComponent(slug); // 对URL编码的中文字符进行解码
+    const articleData = await getArticleData(lang, decodedSlug); // 根据 URL 中的 slug 参数，异步获取文章的标题、HTML 内容等数据。
     const dict = getDictionary(lang);
 
     return (
