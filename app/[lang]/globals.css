@@ -24,7 +24,7 @@ a {
  * 使用 @apply 将多个工具类组合成一个可复用的 CSS 类。
  */
 .article {
-  @apply flex flex-col gap-3 font-poppins text-lg tracking-wide mb-20;
+  @apply flex flex-col gap-6 font-cormorantGaramond text-lg mb-20;
 }
 
 /* * 为 .article 容器内部由 Markdown 生成的各种 HTML 标签定义统一样式。
@@ -40,6 +40,10 @@ a {
 
 .article > h3 {
   @apply font-cormorantGaramond text-2xl text-center tracking-tight;
+}
+
+.article > p {
+    @apply leading-relaxed mb-6;
 }
 
 .article > ol {
