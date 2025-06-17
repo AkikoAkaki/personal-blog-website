@@ -1,3 +1,5 @@
+import type { ReactElement } from 'react';
+
 export type ArticleItem = {
   id: string
   title: string
@@ -7,6 +9,7 @@ export type ArticleItem = {
 }
 
 export type ArticleData = ArticleItem & {
-  contentHtml: string
+  content: ReactElement
+  footnotes: Record<string, ReactElement> // 用于存储脚注内容
   translations: Record<string, string> // 存储可用翻译的对象, e.g., { en: 'slug-en', zh: 'slug-zh' }
 }
