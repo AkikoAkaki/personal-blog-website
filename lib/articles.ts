@@ -3,7 +3,10 @@ import matter from "gray-matter"         // 导入 gray-matter 库，用于解�
 import path from "path"                  // 导入 Node.js 路径模块，用于处理文件路径
 import { remark } from "remark"          // 导入 remark 库，用于将 Markdown 转换为 HTML
 import moment from "moment"              // 导入 moment 库，用于日期格式化和比较
-import html from "remark-html"           // 导入 remark-html 插件，将 Markdown AST 转换为 HTML 字符串
+import remarkRehype from 'remark-rehype' // 导入 remark-rehype 插件，将 remark AST 转换为 rehype AST
+import rehypeStringify from 'rehype-stringify' // 导入 rehype-stringify 插件，将 rehype AST 转换为 HTML 字符串
+import remarkGfm from "remark-gfm"
+import remarkAddTooltipData from "./remark-add-tooltip-data.js"
 
 import type { ArticleItem, ArticleData } from "@/types" // 导入自定义的文章数据类型定义
 const baseArticlesDirectory = path.join(process.cwd(), "articles") // 获取 articles 文件夹的绝对路径
@@ -100,10 +103,13 @@ export const getArticleData = async (lang: string, id: string): Promise<ArticleD
     const fileContents = fs.readFileSync(fullPath, "utf-8")   // 读取文件内容
     const matterResult = matter(fileContents) // 解析 Markdown 文件，分离元数据和正文
 
-    // 使用 remark 将 Markdown 正文转换为 HTML
+    // 使用 remark -> rehype 管道将 Markdown 正文转换为 HTML
     const processedContent = await remark()
-        .use(html)  // 使用 html 插件进行转换
-        .process(matterResult.content)  // 处理正文内容
+        .use(remarkGfm)
+        .use(remarkAddTooltipData) // 2. 在 gfm 之后、html 之前使用它
+        .use(remarkRehype) // 转换为 rehype AST
+        .use(rehypeStringify) // 转换为 HTML 字符串
+        .process(matterResult.content)
 
     const contentHtml = processedContent.toString()
 
