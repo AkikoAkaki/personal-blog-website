@@ -80,10 +80,10 @@ export const getCategorizedArticles = (lang: string): Record<string, ArticleItem
     // 遍历每篇文章，按分类进行分组
     sortedArticles.forEach((article) => {
         const category = article.category || "Uncategorized"
-        if (!categorizedArticles[article.category]) {
-            categorizedArticles[article.category] = [] // 如果这个分类还不存在，创建一个空数组
+        if (!categorizedArticles[category]) {
+            categorizedArticles[category] = [] // 如果这个分类还不存在，创建一个空数组
         }
-        categorizedArticles[article.category].push(article) // 将文章添加到对应的分类数组中
+        categorizedArticles[category].push(article) // 将文章添加到对应的分类数组中
     })
 
     return categorizedArticles
@@ -113,12 +113,12 @@ export const getArticleData = async (lang: string, id: string): Promise<ArticleD
     if (translationId) {
         // 如果有 translationId，就从所有文章中寻找匹配项
         const allArticles = getAllArticles()
-        const avaliableTranslations = allArticles.filter(
+        const availableTranslations = allArticles.filter(
             article => article.translationId === translationId
         )
 
         // 将所有可用翻译版本的信息添加到 translations 对象中
-        avaliableTranslations.forEach(article => {
+        availableTranslations.forEach(article => {
             translations[article.lang] = article.id
         })
     } else {

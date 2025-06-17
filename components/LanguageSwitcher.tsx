@@ -44,7 +44,7 @@ const LanguageSwitcher = ({ translations }: Props) => {
                             </Link>
                         ) : (
                             // 如果翻译不存在，则渲染一个不可点击的、样式不同的 span
-                            <span className="text-gray-400 cursor-not-allowed">
+                            <span className="text-gray-300 cursor-not-allowed">
                                 {lang.name}
                             </span>
                         )
