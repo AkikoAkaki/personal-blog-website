@@ -1,8 +1,8 @@
 ---
-title: 'Exhibition Review | César Piette: Render'
-category: 'review'
-date: '2025-01-26'
-translationId: 'cesar-piette-render'
+title: "Exhibition Review | César Piette: Render"
+category: "review"
+date: "2025-01-26"
+translationId: "cesar-piette-render"
 ---
 
 Models, composition, light, and depth of field—César Piette reconstructs the reality of painting in a modern and gentle way. His works are concise and lively: the titles briefly state the contents of the image, which are primarily simple compositions of portraits, animals, plants, and objects. From a distance, these paintings might appear to be computer-generated models. The objects have a smooth or glossy texture, like plastic or metal, and the background is distinctly blurred, creating a shallow depth of field effect reminiscent of a telephoto lens, which contrasts sharply with the subject. The majority of Piette's works are characterized by their bright colors, dynamic energy, and a charming, lively stillness.

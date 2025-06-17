@@ -9,7 +9,6 @@
   .font-cormorantGaramond {
     font-family: var(--font-cormorant-garamond), serif;
   }
-
   .font-poppins {
     font-family: var(--font-poppins), sans-serif;
   }
@@ -25,7 +24,7 @@ a {
  * 使用 @apply 将多个工具类组合成一个可复用的 CSS 类。
  */
 .article {
-  @apply mb-20 flex flex-col gap-6 font-lora text-lg;
+  @apply flex flex-col gap-6 font-lora text-lg mb-20;
 }
 
 /* * 为 .article 容器内部由 Markdown 生成的各种 HTML 标签定义统一样式。
@@ -44,19 +43,19 @@ a {
 }
 
 .article > p {
-  @apply leading-relaxed;
+    @apply leading-relaxed;
 }
 
 .article > ol {
-  @apply mx-10 flex list-decimal flex-col gap-2;
+  @apply list-decimal flex flex-col mx-10 gap-2;
 }
 
 .article > ul {
-  @apply mx-10 flex list-disc flex-col gap-2;
+  @apply list-disc flex flex-col mx-10 gap-2;
 }
 
 .article > pre {
-  @apply overflow-scroll bg-neutral-100 p-5 font-mono text-neutral-800;
+  @apply bg-neutral-100 text-neutral-800 p-5 overflow-scroll font-mono;
 }
 
 .article > blockquote {
@@ -64,115 +63,10 @@ a {
 }
 
 .article > p > img {
-  @apply mx-auto w-1/2;
+  @apply w-1/2 mx-auto;
 }
 
 .article strong,
 .article b {
   @apply font-medium;
-}
-
-/* --- Footnotes Styling --- */
-
-/* 1. 隐藏由 remark-gfm 自动生成的 "Footnotes" 标题 (通常是 h2)。 */
-.article .footnotes>h2 {
-  @apply hidden;
-}
-
-/* 设定整个脚注区域的顶部分隔线和基础字体样式。 */
-.article .footnotes {
-  @apply mt-12 border-t border-neutral-200 pt-6 text-sm text-neutral-600;
-}
-
-/*
- * 2. 使用 CSS Counters 来实现自定义的 "[1]: " 前缀。
- * - counter-reset: 在 ol 上初始化一个名为 "footnote-counter" 的计数器。
- * - list-style: none; 移除默认的 "1."、"2." 样式。
- */
-.article .footnotes ol {
-  @apply pl-0;
-  counter-reset: footnote-counter;
-  list-style: none;
-}
-
-/* 3. 实现悬停在整个脚注项（li）上时，文本变色。 */
-.article .footnotes li {
-  @apply mb-2;
-}
-
-.article .footnotes li:hover {
-  @apply text-[#3d7fdc];
-}
-
-/*
- * 为每个 li 生成伪元素 ::before 来显示自定义前缀。
- * - counter-increment: 让每个 li 都使计数器加 1。
- * - content: 设置我们期望的格式。
- */
-.article .footnotes li::before {
-  content: '[' counter(footnote-counter) ']: ';
-  counter-increment: footnote-counter;
-  @apply font-medium;
-}
-
-/* 4. 实现悬停时，为脚注文本和返回箭头添加下划线和颜色。 */
-.article .footnotes li:hover,
-.article .footnotes li:hover a {
-  @apply underline;
-}
-
-/*
- * 确保返回箭头链接本身在未悬停时没有下划线。
- */
-.article .footnote-backref {
-  @apply no-underline;
-}
-
-/* 
- * 将 li 内的 p 元素设为 inline，以确保它和 ::before 前缀在同一行显示。
- * 同时移除其默认的 margin。
- */
-.article .footnotes li p {
-  @apply m-0 inline;
-}
-
-/* * 正文中的上标引用样式（保持不变）。
- */
-.article sup a {
-  @apply px-1 align-super text-sm leading-none text-neutral-500 no-underline transition-colors hover:text-[#3d7fdc];
-}
-
-/* --- Tooltip Styling --- */
-
-/*
- * 为包含 data-tooltip 属性的脚注引用 <sup> 元素添加相对定位，
- * 这是其伪元素进行绝对定位的基准。
- */
-.article sup[data-tooltip] {
-  @apply relative;
-}
-
-/*
- * 使用 ::after 伪元素创建并设计 Tooltip 的样式。
- * - `content: attr(data-tooltip);` 是核心，它会读取 HTML 标签上的 data-tooltip 属性值并显示。
- * - 默认状态下，它是透明且不可见的。
- */
-.article sup[data-tooltip]::after {
-  content: attr(data-tooltip);
-  @apply absolute bottom-full left-1/2 block w-72 -translate-x-1/2;
-  /* 向上增加一点间距 */
-  @apply mb-2;
-  @apply rounded-md bg-neutral-800 px-3 py-2 text-sm font-normal text-white shadow-lg;
-  @apply opacity-0 invisible transition-opacity duration-200 ease-in-out;
-  /* 确保 tooltip 在最上层 */
-  z-index: 50;
-  /* 确保 tooltip 不会干扰鼠标事件 */
-  pointer-events: none;
-}
-
-/*
- * 当鼠标悬停在 sup 元素上时，使其 ::after 伪元素（也就是我们的 Tooltip）变得可见。
- */
-.article sup[data-tooltip]:hover::after {
-  @apply visible opacity-100;
 }

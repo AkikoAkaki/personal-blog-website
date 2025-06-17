@@ -1,17 +1,17 @@
 ---
-title: 'Derrida: What is Poetry?'
-category: 'note'
-date: '2025-01-14'
-translationId: 'derrida-poetry'
+title: "Derrida: What is Poetry?"
+category: "note"
+date: "2025-01-14"
+translationId: "derrida-poetry"
 ---
 
 [Derrida: What is Poetry?](https://ptext.nju.edu.cn/c4/82/c12242a246914/page.htm)
 
-_Translated from Jacques Derrida, Che cos'è la poesia?, trans. Peggy Kamuf, in A Derrida Reader: Between the Blinds, ed. Peggy Kamuf, New York: Columbia University Press, 1991, pp. 221-237._
+*Translated from Jacques Derrida, Che cos'è la poesia?, trans. Peggy Kamuf, in A Derrida Reader: Between the Blinds, ed. Peggy Kamuf, New York: Columbia University Press, 1991, pp. 221-237.*
 
 ---
 
-> The difference between water and watercolor is color, even when the color is white. This is the softly, precisely articulated nuances I’ve long admired in Olivia Giacobetti’s perfumes, exercised in her smooth, aromatic masterpieces for the Parisian hotel Costes and epitomized in her own tragically discontinued line IUNX. She coaxes poetry out of paleness, with a penchant for dewy, gestural compositions including Hiris for Hermes, the figs she’s made for Diptyque and L’Artisan, and the utterly unique En Passant for Frederic Malle—which of her broad oeuvre, perhaps most presages some of her latest projects, a collection of new, loosely ‘pour homme’ scents for Zara.
+> The difference between water and watercolor is color, even when the color is white. This is the softly, precisely articulated nuances I’ve long admired in Olivia Giacobetti’s perfumes, exercised in her smooth, aromatic masterpieces for the Parisian hotel Costes and epitomized in her own tragically discontinued line IUNX. She coaxes poetry out of paleness, with a penchant for dewy, gestural compositions including Hiris for Hermes, the figs she’s made for Diptyque and L’Artisan, and the utterly unique En Passant for Frederic Malle—which of her broad oeuvre, perhaps most presages some of her latest projects, a collection of new, loosely ‘pour homme’ scents for Zara. 
 
 ## The Independence, Multiplicity, Ambiguity, and Fluidity of Poetry
 

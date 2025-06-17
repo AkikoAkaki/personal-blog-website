@@ -1,104 +1,55 @@
-import Link from "next/link";
-import { ArrowLeftIcon } from "@heroicons/react/24/solid";
-import { getArticleData } from "@/lib/articles";
-import { getDictionary } from "@/lib/dictionaries";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
-import Footnote from "@/components/Footnote";
+import Link from "next/link"; // 导入 Next.js 的 Link 组件，用于客户端导航。
+import { ArrowLeftIcon } from "@heroicons/react/24/solid"; // 从 Heroicons 图标库导入左箭头图标。
+import { getArticleData } from "@/lib/articles"; // 导入用于获取单篇文章数据的函数。
+import { getDictionary } from "@/lib/dictionaries"; // 导入用于获取字典数据的函数。
+import LanguageSwitcher from "@/components/LanguageSwitcher"; // 导入语言切换组件
 
-import React, { Fragment, ComponentProps } from 'react';
-import { jsx, jsxs } from 'react/jsx-runtime';
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkGfm from 'remark-gfm';
-import remarkRehype from 'remark-rehype';
-import rehypeReact from 'rehype-react';
-import fs from "fs";
-import path from "path";
-import matter from "gray-matter";
+/**
+ * Article 页面是一个动态路由页面，用于显示单篇文章的内容。
+ * 这是一个异步的服务端组件 (Server Component)，可以在渲染前直接获取数据。
+ *
+ * @param {object} props - 包含动态路由参数的 props。
+ * @param {{ slug: string, lang: string }} props.params - Next.js 传入的路由参数，slug 即文章的 ID。
+ */
+const Article = async ({ params }: { params: Promise<{ slug: string, lang: string }> }) => {
+    const { slug, lang } = await params; // 在Next.js 15中，params是一个Promise，需要await
+    const decodedSlug = decodeURIComponent(slug); // 对URL编码的中文字符进行解码
+    const articleData = await getArticleData(lang, decodedSlug); // 根据 URL 中的 slug 参数，异步获取文章的标题、HTML 内容等数据。
+    const dict = getDictionary(lang);
 
-const Article = async ({ params }: { params: { slug: string, lang: string } }) => {
-  const { slug, lang } = params;
-  const decodedSlug = decodeURIComponent(slug);
+    return (
+        <>
+            <div className="w-11/12 md:w-1/2 mx-auto my-4 flex justify-end">
+                <LanguageSwitcher translations={articleData.translations} />
+            </div>
+            <section className="mx-auto w-11/12 md:w-[45rem] mt-20 flex flex-col gap-5">
+                {/* 页面顶部导航区，包含返回链接和文章日期 */}
+                <div className="flex justify-between font-poppins mb-8">
+                    <Link href={`/${lang}`} className="flex flex-row gap-2 place-items-center text-gray-600 hover:text-[#3d7fdc] transition-colors">
+                        <ArrowLeftIcon width={20} />
+                        <p>{dict.back_to_home}</p>
+                    </Link>
+                    <p className="text-gray-500">{articleData.date.toString()}</p>
+                </div>
 
-  const articleData = await getArticleData(lang, decodedSlug);
-  const dict = getDictionary(lang);
+                {/* 文章主标题。 */}
+                <h1 className="font-cormorantGaramond text-6xl font-light mb-8 text-neutral-900">
+                    {articleData.title}
+                </h1>
 
-  const fullPath = path.join(process.cwd(), "articles", lang, `${decodedSlug}.md`);
-  const fileContents = fs.readFileSync(fullPath, "utf-8");
-  const { content: markdownContent } = matter(fileContents);
-
-  // 配置 rehype-react
-  const contentElement = (await unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeReact, {
-      jsx: jsx,
-      jsxs: jsxs,
-      Fragment: Fragment,
-      components: {
-        // 拦截 <sup> 标签的渲染
-        sup(props: ComponentProps<'sup'>) {
-          const { id, children } = props;
-          console.log('拦截到sup标签:', { id, children, props });
-
-          // 检查 id 是否符合脚注引用的格式，如 "fnref-1"
-          if (id && id.startsWith('fnref-')) {
-            const footnoteId = id.substring(6);
-            const footnoteContent = articleData.footnotes[footnoteId];
-
-            console.log('脚注匹配检查:', {
-              footnoteId,
-              footnoteContent: footnoteContent?.substring(0, 50) + '...',
-              hasContent: !!footnoteContent,
-              allFootnotes: Object.keys(articleData.footnotes)
-            });
-
-            // 如果在数据中找到了对应的脚注内容，就渲染我们的自定义组件
-            if (footnoteContent) {
-              return <Footnote id={footnoteId} content={footnoteContent} />;
-            }
-          }
-
-          // 否则，按默认方式渲染 sup 标签
-          console.log('使用默认sup渲染:', props);
-          return <sup {...props} />;
-        },
-        // 拦截并移除页面底部的默认脚注列表
-        section(props: ComponentProps<'section'>) {
-          if (props.className && props.className.includes('footnotes')) {
-            return null;
-          }
-          return <section {...props} />;
-        }
-      },
-    })
-    .process(markdownContent)).result;
-
-  return (
-    <>
-      <div className="w-11/12 md:w-1/2 mx-auto my-4 flex justify-end">
-        <LanguageSwitcher translations={articleData.translations} />
-      </div>
-      <section className="mx-auto w-11/12 md:w-[45rem] mt-20 flex flex-col gap-5">
-        <div className="flex justify-between font-poppins mb-8">
-          <Link href={`/${lang}`} className="flex flex-row gap-2 place-items-center text-gray-600 hover:text-[#3d7fdc] transition-colors">
-            <ArrowLeftIcon width={20} />
-            <p>{dict.back_to_home}</p>
-          </Link>
-          <p className="text-gray-500">{articleData.date.toString()}</p>
-        </div>
-
-        <h1 className="font-cormorantGaramond text-6xl font-light mb-8 text-neutral-900">
-          {articleData.title}
-        </h1>
-
-        <article className="article">
-          {contentElement}
-        </article>
-      </section>
-    </>
-  );
+                {/*
+        * 文章正文容器。
+        * 使用 dangerouslySetInnerHTML 是因为文章内容是从 Markdown 转换来的 HTML 字符串。
+        * 在此项目中，内容源于本地文件，是可信的，因此可以安全使用。
+        */}
+                <article
+                    className="article"
+                    dangerouslySetInnerHTML={{ __html: articleData.contentHtml }}
+                />
+            </section>
+        </>
+    );
 };
 
+// 默认导出该页面组件。
 export default Article;
