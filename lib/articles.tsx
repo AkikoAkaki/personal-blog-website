@@ -1,39 +1,42 @@
 import fs from "fs";
-import path from "path";
 import matter from "gray-matter";
+import path from "path";
 import moment from "moment";
-import { unified, type Plugin } from "unified";
-import remarkParse from "remark-parse";
-import remarkGfm from "remark-gfm";
-import remarkRehype from "remark-rehype";
-import rehypeReact from "rehype-react";
-import remarkStringify from "remark-stringify";
-import { Fragment, type ReactElement, type ComponentProps } from "react";
-import { jsx, jsxs } from "react/jsx-runtime";
-import { visit } from "unist-util-visit";
-import type { Root, Content } from "mdast";
-
-import Footnote from "@/components/Footnote";
-import type { ArticleItem, ArticleData } from "@/types";
+import { remark } from 'remark';
+import remarkGfm from 'remark-gfm';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import { unified, Plugin } from 'unified';
+import { visit } from 'unist-util-visit';
+import { toString as mdastToString } from 'mdast-util-to-string'; // 引入新工具
+import type { Root, FootnoteDefinition } from 'mdast'; // 引入类型
+import type { ArticleItem, ArticleData, Footnotes } from "@/types";
 
 const baseArticlesDirectory = path.join(process.cwd(), "articles");
 const supportedLangs = ["en", "zh", "ja"];
 let allArticlesCache: (ArticleItem & { lang: string })[] | undefined;
 
-// ... (前半部分函数无需改动) ...
+
 const getAllArticles = (): (ArticleItem & { lang: string })[] => {
-    if (allArticlesCache) return allArticlesCache;
-    const allarticles: (ArticleItem & { lang: string })[] = [];
+    if (allArticlesCache) return allArticlesCache
+
+    const allarticles: (ArticleItem & { lang: string })[] = []
+
     supportedLangs.forEach(lang => {
-        const langDirectory = path.join(baseArticlesDirectory, lang);
-        if (!fs.existsSync(langDirectory)) return;
-        const fileNames = fs.readdirSync(langDirectory);
+        const langDirectory = path.join(baseArticlesDirectory, lang)
+
+        if (!fs.existsSync(langDirectory)) return
+
+        const fileNames = fs.readdirSync(langDirectory)
+
         fileNames.forEach((fileName) => {
-            if (!fileName.endsWith(".md")) return;
-            const id = fileName.replace(/\.md$/, "");
-            const fullPath = path.join(langDirectory, fileName);
-            const fileContents = fs.readFileSync(fullPath, "utf8");
-            const matterResult = matter(fileContents);
+            if (!fileName.endsWith(".md")) return
+
+            const id = fileName.replace(/\.md$/, "")
+            const fullPath = path.join(langDirectory, fileName)
+            const fileContents = fs.readFileSync(fullPath, "utf8")
+            const matterResult = matter(fileContents)
+
             allarticles.push({
                 id,
                 lang,
@@ -41,86 +44,78 @@ const getAllArticles = (): (ArticleItem & { lang: string })[] => {
                 date: matterResult.data.date,
                 category: matterResult.data.category,
                 translationId: matterResult.data.translationId,
-            });
-        });
-    });
-    allArticlesCache = allarticles;
-    return allarticles;
-};
+            })
+        })
+    })
+
+    allArticlesCache = allarticles
+    return allArticlesCache
+}
 
 const getSortedArticles = (lang: string): ArticleItem[] => {
-    const allArticles = getAllArticles();
-    const articlesForLang = allArticles.filter(article => article.lang === lang);
+    const allArticles = getAllArticles()
+    const articlesForLang = allArticles.filter(article => article.lang === lang)
+
     return articlesForLang.sort((a, b) => {
-        const format = "YYYY-MM-DD";
-        const dateA = moment(a.date, format);
-        const dateB = moment(b.date, format);
-        return dateA.isBefore(dateB) ? 1 : -1;
-    });
-};
+        const format = "YYYY-MM-DD"
+        const dateA = moment(a.date, format)
+        const dateB = moment(b.date, format)
+        return dateA.isBefore(dateB) ? 1 : -1
+    })
+}
 
 export const getCategorizedArticles = (lang: string): Record<string, ArticleItem[]> => {
-    const sortedArticles = getSortedArticles(lang);
-    const categorizedArticles: Record<string, ArticleItem[]> = {};
+    const sortedArticles = getSortedArticles(lang)
+    const categorizedArticles: Record<string, ArticleItem[]> = {}
+
     sortedArticles.forEach((article) => {
-        const category = article.category || "Uncategorized";
+        const category = article.category || "Uncategorized"
         if (!categorizedArticles[category]) {
-            categorizedArticles[category] = [];
+            categorizedArticles[category] = []
         }
-        categorizedArticles[category].push(article);
-    });
-    return categorizedArticles;
+        categorizedArticles[category].push(article)
+    })
+
+    return categorizedArticles
+}
+
+
+const extractFootnotesPlugin: Plugin<[Footnotes], Root> = (options) => {
+    return (tree: Root) => {
+        console.log('开始提取脚注...');
+        visit(tree, 'footnoteDefinition', (node: FootnoteDefinition) => {
+            const id = node.identifier;
+            const content = mdastToString(node);
+            console.log('找到脚注定义:', { id, content: content.substring(0, 100) + '...' });
+            if (options) {
+                options[id] = content.trim();
+            }
+        });
+        console.log('脚注提取完成，总数:', Object.keys(options || {}).length);
+    };
 };
 
-export const getArticleData = async (lang: string, id: string): Promise<ArticleData> => {
+
+// 修正后的 getArticleData 函数
+export const getArticleData = async (lang: string, id: string): Promise<Omit<ArticleData, 'content'>> => {
     const fullPath = path.join(baseArticlesDirectory, lang, `${id}.md`);
     const fileContents = fs.readFileSync(fullPath, "utf-8");
     const matterResult = matter(fileContents);
 
-    const footnotesReactMap: Record<string, ReactElement> = {};
+    const footnotes: Footnotes = {};
 
-    // @ts-ignore remark-gfm 会在 data 属性上附加 footnoteDefinitions
-    const { footnoteDefinitions = {} } = (unified().use(remarkParse).use(remarkGfm).parse(matterResult.content)).data ?? {};
-
-    for (const identifier in footnoteDefinitions) {
-        const footnoteAst = footnoteDefinitions[identifier] as Root;
-        if (!footnoteAst) continue;
-
-        const footnoteContent = (await unified()
-            .use(remarkRehype)
-            .use(rehypeReact, { Fragment, jsx, jsxs })
-            .run(footnoteAst)) as ReactElement;
-
-        footnotesReactMap[identifier] = footnoteContent;
-    }
-
-    const content = (await unified()
+    // 修正部分：显式地分步执行 parse 和 run
+    const processor = unified()
         .use(remarkParse)
         .use(remarkGfm)
-        .use(remarkRehype)
-        .use(rehypeReact, {
-            Fragment,
-            jsx,
-            jsxs,
-            components: {
-                // 最终修正：拦截 a 标签并使用正确的 id 前缀
-                a: (props: ComponentProps<'a'>) => {
-                    const { id, children } = props;
-                    if (id && typeof id === 'string' && id.startsWith('user-content-fnref-')) {
-                        const footnoteId = id.substring('user-content-fnref-'.length);
-                        const footnoteContent = footnotesReactMap[footnoteId];
+        .use(extractFootnotesPlugin, footnotes);
 
-                        if (footnoteContent) {
-                            return <Footnote id={footnoteId} content={footnoteContent} />;
-                        }
-                    }
-                    return <a {...props}>{children}</a>;
-                },
-                // 我们不再需要拦截 sup 了，因为 id 不在 sup 上
-            },
-        })
-        .process(matterResult.content)).result as ReactElement;
+    // 1. 解析 Markdown 内容为语法树
+    const tree = processor.parse(matterResult.content);
+    // 2. 在树上运行插件以提取脚注
+    await processor.run(tree);
 
+    // 翻译链接处理逻辑保持不变
     const translationId = matterResult.data.translationId;
     const translations: Record<string, string> = {};
 
@@ -138,12 +133,11 @@ export const getArticleData = async (lang: string, id: string): Promise<ArticleD
 
     return {
         id,
-        content,
-        footnotes: footnotesReactMap,
+        footnotes,
         title: matterResult.data.title,
         category: matterResult.data.category,
-        date: moment(matterResult.data.date).format("YYYY-MM-DD"),
+        date: moment(moment(matterResult.data.date).toDate()).format("YYYY-MM-DD"),
         translationId: matterResult.data.translationId,
         translations,
     };
-};
+}

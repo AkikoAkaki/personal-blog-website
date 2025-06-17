@@ -1,18 +1,79 @@
-import Link from "next/link"; // 导入 Next.js 的 Link 组件，用于客户端导航。
-import { ArrowLeftIcon } from "@heroicons/react/24/solid"; // 从 Heroicons 图标库导入左箭头图标。
-import { getArticleData } from "@/lib/articles"; // 导入用于获取单篇文章数据的函数。
-import { getDictionary } from "@/lib/dictionaries"; // 导入用于获取字典数据的函数。
-import LanguageSwitcher from "@/components/LanguageSwitcher"; // 导入语言切换组件
+import Link from "next/link";
+import { ArrowLeftIcon } from "@heroicons/react/24/solid";
+import { getArticleData } from "@/lib/articles";
+import { getDictionary } from "@/lib/dictionaries";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Footnote from "@/components/Footnote";
 
-/**
- * Article 页面是一个动态路由页面，用于显示单篇文章的内容。
- * 这是一个异步的服务端组件 (Server Component)，可以在渲染前直接获取数据。
- */
-const Article = async ({ params }: { params: Promise<{ slug: string, lang: string }> }) => {
-  const { slug, lang } = await params;
+import React, { Fragment, ComponentProps } from 'react';
+import { jsx, jsxs } from 'react/jsx-runtime';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypeReact from 'rehype-react';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+
+const Article = async ({ params }: { params: { slug: string, lang: string } }) => {
+  const { slug, lang } = params;
   const decodedSlug = decodeURIComponent(slug);
+
   const articleData = await getArticleData(lang, decodedSlug);
   const dict = getDictionary(lang);
+
+  const fullPath = path.join(process.cwd(), "articles", lang, `${decodedSlug}.md`);
+  const fileContents = fs.readFileSync(fullPath, "utf-8");
+  const { content: markdownContent } = matter(fileContents);
+
+  // 配置 rehype-react
+  const contentElement = (await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeReact, {
+      jsx: jsx,
+      jsxs: jsxs,
+      Fragment: Fragment,
+      components: {
+        // 拦截 <sup> 标签的渲染
+        sup(props: ComponentProps<'sup'>) {
+          const { id, children } = props;
+          console.log('拦截到sup标签:', { id, children, props });
+
+          // 检查 id 是否符合脚注引用的格式，如 "fnref-1"
+          if (id && id.startsWith('fnref-')) {
+            const footnoteId = id.substring(6);
+            const footnoteContent = articleData.footnotes[footnoteId];
+
+            console.log('脚注匹配检查:', {
+              footnoteId,
+              footnoteContent: footnoteContent?.substring(0, 50) + '...',
+              hasContent: !!footnoteContent,
+              allFootnotes: Object.keys(articleData.footnotes)
+            });
+
+            // 如果在数据中找到了对应的脚注内容，就渲染我们的自定义组件
+            if (footnoteContent) {
+              return <Footnote id={footnoteId} content={footnoteContent} />;
+            }
+          }
+
+          // 否则，按默认方式渲染 sup 标签
+          console.log('使用默认sup渲染:', props);
+          return <sup {...props} />;
+        },
+        // 拦截并移除页面底部的默认脚注列表
+        section(props: ComponentProps<'section'>) {
+          if (props.className && props.className.includes('footnotes')) {
+            return null;
+          }
+          return <section {...props} />;
+        }
+      },
+    })
+    .process(markdownContent)).result;
 
   return (
     <>
@@ -32,12 +93,8 @@ const Article = async ({ params }: { params: Promise<{ slug: string, lang: strin
           {articleData.title}
         </h1>
 
-        {/* * 直接渲染由 rehype-react 生成的 React 元素。
-                  * `articleData.content` 现在是一个完整的组件树，其中包含了我们的 <Footnote /> 组件。
-                  * 我们不再需要使用 dangerouslySetInnerHTML。
-                  */}
         <article className="article">
-          {articleData.content}
+          {contentElement}
         </article>
       </section>
     </>

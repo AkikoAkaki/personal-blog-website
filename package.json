@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/mdast": "^4.0.4",
     "@types/moment": "^2.11.29",
     "@types/node": "^20",
     "@types/react": "^19",

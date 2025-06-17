@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import { JSX } from "react";
 
 export type ArticleItem = {
   id: string
@@ -8,8 +8,13 @@ export type ArticleItem = {
   translationId: string
 }
 
+// 脚注内容的类型
+export type Footnotes = Record<string, string>;
+
 export type ArticleData = ArticleItem & {
-  content: ReactElement
-  footnotes: Record<string, ReactElement> // 用于存储脚注内容
-  translations: Record<string, string> // 存储可用翻译的对象, e.g., { en: 'slug-en', zh: 'slug-zh' }
+  // 将 contentHtml: string 修改为 content: JSX.Element
+  content: JSX.Element;
+  // 新增一个字段来存储所有脚注
+  footnotes: Footnotes;
+  translations: Record<string, string>;
 }
