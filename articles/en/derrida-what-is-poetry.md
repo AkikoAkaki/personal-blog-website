@@ -2,6 +2,7 @@
 title: "Derrida: What is Poetry?"
 category: "note"
 date: "2025-01-14"
+translationId: "derrida-poetry"
 ---
 
 [Derrida: What is Poetry?](https://ptext.nju.edu.cn/c4/82/c12242a246914/page.htm)
