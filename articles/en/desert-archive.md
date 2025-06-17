@@ -2,6 +2,7 @@
 title: "Desert: Archive"
 category: "prose poetry"
 date: "2025-05-12"
+translationId: "desert-archive"
 ---
 
 *The ground covered in shifting sand. Burial, devouring, and new, bare surfaces. Everywhere in sight. Lost. A stunning silence. Trapped in a golden ocean and the world's hourglass. Sunrise on the dunes. A book. Gazing, abandoned. Solitude and excitement.*

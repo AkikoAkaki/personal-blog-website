@@ -2,6 +2,7 @@
 title: "The Schizo-Poet and the Body Without Organs: Deleuze's Misreading"
 category: "note"
 date: "2025-01-12"
+translationId: "schizo-poet-deleuze"
 ---
 
 [The Schizo-Poet and the Body Without Organs: Deleuze's Misreading](https://mp.weixin.qq.com/s?__biz=MzA3OTg3Nzg5MQ==&mid=2650848181&idx=1&sn=ab2822f76af49618f882afbb512c8e60&chksm=8458d9d9b32f50cf0172243f1b075dcd5ae6b7efe2950bf6517bf607adc48aac48dd217f8eeb&mpshare=1&scene=1&srcid=1212LRESdhS5kUASh5p6dDYp&sharer_shareinfo=27fe11c193dad64a392514d82c6907c0&sharer_shareinfo_first=27fe11c193dad64a392514d82c6907c0) #study/humanity
