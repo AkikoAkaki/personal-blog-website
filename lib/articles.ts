@@ -113,12 +113,12 @@ export const getArticleData = async (lang: string, id: string): Promise<ArticleD
     if (translationId) {
         // 如果有 translationId，就从所有文章中寻找匹配项
         const allArticles = getAllArticles()
-        const avaliableTranslations = allArticles.filter(
+        const availableTranslations = allArticles.filter(
             article => article.translationId === translationId
         )
 
         // 将所有可用翻译版本的信息添加到 translations 对象中
-        avaliableTranslations.forEach(article => {
+        availableTranslations.forEach(article => {
             translations[article.lang] = article.id
         })
     } else {
