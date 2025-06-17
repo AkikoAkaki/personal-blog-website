@@ -31,7 +31,7 @@ const ArticleItemList = ({ category, articles, lang }: Props) => {
                     <Link
                         href={`/${lang}/${article.id}`} // 指向文章详情页的动态路由。
                         key={article.id} // React 列表渲染优化所需的 key。
-                        className="font-cormorantGaramond text-xl text-black hover:text-[#3d7fdc]" // 文章链接的样式和悬停效果。
+                        className="font-cormorantGaramond text-xl font-medium text-black hover:text-[#3d7fdc]" // 文章链接的样式和悬停效果。
                     >
                         {article.title}
                     </Link>
