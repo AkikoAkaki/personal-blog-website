@@ -1,3 +1,5 @@
+import { JSX } from "react";
+
 export type ArticleItem = {
     id: string
     title: string 
@@ -5,6 +7,9 @@ export type ArticleItem = {
     category: string
     translationId: string
 }
+
+// 脚注内容的类型
+export type Footnotes = Record<string, string>;
 
 export type ArticleData = ArticleItem & {
     contentHtml: string
