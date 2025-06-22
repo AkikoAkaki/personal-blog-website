@@ -28,7 +28,7 @@ const LanguageSwitcher = ({ translations }: Props) => {
     };
 
     return (
-        <div className="flex gap-3 text-sm font-poppins text-gray-500 items-center">
+        <div className="flex gap-3 text-sm font-poppins text-gray-500 dark:text-zinc-400 items-center">
             {supportedLanguages.map((lang, index) => (
                 // Fragment 用于包裹每个语言链接和分隔符
                 <Fragment key={lang.code}>
@@ -38,19 +38,19 @@ const LanguageSwitcher = ({ translations }: Props) => {
                             // 如果该语言的翻译存在，则渲染一个可点击的 Link
                             <Link
                                 href={`/${lang.code}/${translations[lang.code]}`}
-                                className="hover:text-[#3d7fdc] transition-colors"
+                                className="hover:scale-110 hover:drop-shadow-sm transition-all duration-300 ease-out"
                             >
                                 {lang.name}
                             </Link>
                         ) : (
                             // 如果翻译不存在，则渲染一个不可点击的、样式不同的 span
-                            <span className="text-gray-300 cursor-not-allowed">
+                                <span className="text-gray-300 dark:text-zinc-600 cursor-not-allowed">
                                 {lang.name}
                             </span>
                         )
                     ) : (
                         // --- 默认模式 (非文章页) ---
-                        <Link href={getLinkForLangDefault(lang.code)} className="hover:text-[#3d7fdc]">
+                            <Link href={getLinkForLangDefault(lang.code)} className="hover:scale-110 hover:drop-shadow-sm transition-all duration-300 ease-out hover:drop-shadow-sm">
                             {lang.name}
                         </Link>
                     )}

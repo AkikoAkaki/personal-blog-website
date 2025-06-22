@@ -25,15 +25,19 @@ const Article = async ({ params }: { params: Promise<{ slug: string, lang: strin
             <section className="mx-auto w-11/12 md:w-[45rem] mt-20 flex flex-col gap-5">
                 {/* 页面顶部导航区，包含返回链接和文章日期 */}
                 <div className="flex justify-between font-poppins mb-8">
-                    <Link href={`/${lang}`} className="flex flex-row gap-2 place-items-center text-gray-600 hover:text-[#3d7fdc] transition-colors">
+                    <Link
+                        href={`/${lang}`}
+                        className="flex flex-row gap-2 place-items-center text-gray-600 dark:text-zinc-400 
+                                    hover:scale-105 hover:drop-shadow-sm transition-all duration-300 ease-out"
+                    >
                         <ArrowLeftIcon width={20} />
                         <p>{dict.back_to_home}</p>
                     </Link>
-                    <p className="text-gray-500">{articleData.date.toString()}</p>
+                    <p className="text-gray-500 dark:text-zinc-400">{articleData.date.toString()}</p>
                 </div>
 
                 {/* 文章主标题。 */}
-                <h1 className="font-cormorantGaramond text-6xl font-light mb-8 text-neutral-900">
+                <h1 className="font-cormorantGaramond text-6xl font-light mb-8 text-neutral-900 dark:text-white">
                     {articleData.title}
                 </h1>
 
