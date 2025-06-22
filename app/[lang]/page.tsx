@@ -1,14 +1,16 @@
-import ArticleItemList from "@/components/ArticleListItem"; // 导入文章列表组件，用于展示单个分类下的文章。
-import { getCategorizedArticles } from "@/lib/articles"; // 导入数据处理函数，用于获取并分类所有文章。
+import CategoryCard from "@/components/CategoryCard"; // 导入新的分类卡片组件
+import { getCategoryStats } from "@/lib/articles"; // 导入分类统计函数
+import { getDictionary } from "@/lib/dictionaries"; // 导入字典函数
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 /**
  * HomePage 是博客的主页。
- * 它在服务端获取所有文章，按分类进行组织，并渲染出文章列表。
+ * 重构后只显示分类卡片，用户需要点击分类来查看具体文章
  */
 const HomePage = async ({ params }: { params: Promise<{ lang: string }> }) => {
   const { lang } = await params; // 在Next.js 15中，params是一个Promise，需要await
-  const articles = getCategorizedArticles(lang); // 调用函数，获取按分类组织好的文章数据。
+  const categoryStats = getCategoryStats(lang); // 获取分类统计信息
+  const dict = getDictionary(lang); // 获取多语言字典
 
   return (
     <>
@@ -16,28 +18,36 @@ const HomePage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         <LanguageSwitcher />
       </div>
       
-      <section className="mx-auto w-11/12 md:w-1/2 mt-20 flex flex-col gap-16 mb-20">
-        {/* 博客标题区域，使用 Tailwind CSS 工具类来定义字体、大小、字重和边距。 */}
+      <section className="mx-auto w-11/12 md:w-2/3 lg:w-1/2 mt-20 flex flex-col gap-16 mb-20">
+        {/* 博客标题区域 */}
         <header className="font-cormorantGaramond text-neutral-900 text-center">
           <h1 className="text-[100px]" style={{ fontFamily: 'Cormorant Garamond, serif', fontWeight: 300 }}>
             Aki&apos;s Blog
           </h1>
+          <p className="font-poppins text-gray-600 text-lg mt-4">
+            {dict.explore_subtitle}
+          </p>
         </header>
 
-        {/* 文章列表区域，在桌面端为两栏网格布局。 */}
-        <section className="md:grid md:grid-cols-2 flex flex-col gap-10">
-          {/* 确保 articles 对象存在后，遍历其中的每个分类名。 */}
-          {articles !== null &&
-            Object.keys(articles).map((categoryName) => (
-              // 为每个分类渲染一个 ArticleItemList 组件。
-              <ArticleItemList
-                category={categoryName} // category: 传入当前分类的名称。
-                articles={articles[categoryName]} // articles: 传入该分类下的文章数组。
-                lang={lang} // lang: 传入当前语言。
-                key={categoryName} // key: 使用分类名作为 React 列表渲染的唯一标识。
-              />
-            ))}
+        {/* 分类卡片网格 */}
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categoryStats.map((category) => (
+            <CategoryCard
+              key={category.name}
+              category={category}
+              lang={lang}
+            />
+          ))}
         </section>
+
+        {/* 如果没有分类，显示提示信息 */}
+        {categoryStats.length === 0 && (
+          <div className="text-center py-16">
+            <p className="font-poppins text-gray-500 text-lg">
+              {dict.no_articles_available}
+            </p>
+          </div>
+        )}
       </section>
     </>
   );
