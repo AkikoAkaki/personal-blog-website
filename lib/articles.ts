@@ -8,7 +8,7 @@ import rehypeStringify from 'rehype-stringify' // 导入 rehype-stringify 插件
 import remarkGfm from "remark-gfm"
 import remarkAddTooltipData from "./remark-add-tooltip-data.js"
 
-import type { ArticleItem, ArticleData } from "@/types" // 导入自定义的文章数据类型定义
+import type { ArticleItem, ArticleData, CategoryStat } from "@/types" // 导入自定义的文章数据类型定义
 const baseArticlesDirectory = path.join(process.cwd(), "articles") // 获取 articles 文件夹的绝对路径
 const supportedLangs = ["en", "zh", "ja"] // 支持的语言列表
 let allArticlesCache: (ArticleItem & { lang: string })[] | undefined // 缓存所有文章的元数据
@@ -142,4 +142,23 @@ export const getArticleData = async (lang: string, id: string): Promise<ArticleD
         translationId: matterResult.data.translationId,
         translations, // 所有可用翻译版本的信息
     }
+}
+
+/**
+ * 获取指定语言下所有分类的统计信息（用于主页显示）
+ * @param {string} lang 语言代码
+ * @returns {CategoryStat[]} 分类统计信息数组，按文章数量降序排列
+ */
+export const getCategoryStats = (lang: string): CategoryStat[] => {
+    const categorizedArticles = getCategorizedArticles(lang)
+
+    const categoryStats: CategoryStat[] = Object.keys(categorizedArticles).map(categoryName => ({
+        name: categoryName,
+        articleCount: categorizedArticles[categoryName].length,
+        // 可以在这里添加分类描述的逻辑
+        description: undefined
+    }))
+
+    // 按文章数量降序排列，确保内容最多的分类优先显示
+    return categoryStats.sort((a, b) => b.articleCount - a.articleCount)
 }
