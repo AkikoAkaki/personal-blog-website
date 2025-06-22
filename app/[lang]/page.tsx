@@ -5,7 +5,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 /**
  * HomePage 是博客的主页。
- * 重构后只显示分类卡片，用户需要点击分类来查看具体文章
+ * 显示分类卡片，用户需要点击分类来查看具体文章
  */
 const HomePage = async ({ params }: { params: Promise<{ lang: string }> }) => {
   const { lang } = await params; // 在Next.js 15中，params是一个Promise，需要await
@@ -36,6 +36,7 @@ const HomePage = async ({ params }: { params: Promise<{ lang: string }> }) => {
               key={category.name}
               category={category}
               lang={lang}
+              dict={{ article: dict.article, articles: dict.articles }}
             />
           ))}
         </section>

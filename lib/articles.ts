@@ -55,7 +55,7 @@ const getAllArticles = (): (ArticleItem & { lang: string })[] => {
 
 
 /**
- * 获取制定语言下所有文章并按日期排序
+ * 获取指定语言下所有文章并按日期排序
  * @param {string} lang - 语言代码 (e.g., "zh")
  * @returns {ArticleItem[]} 排序后的文章数组
  */
@@ -146,16 +146,26 @@ export const getArticleData = async (lang: string, id: string): Promise<ArticleD
 
 /**
  * 获取指定语言下所有分类的统计信息（用于主页显示）
+ * 优化版本：直接从缓存计算，避免重复处理
  * @param {string} lang 语言代码
  * @returns {CategoryStat[]} 分类统计信息数组，按文章数量降序排列
  */
 export const getCategoryStats = (lang: string): CategoryStat[] => {
-    const categorizedArticles = getCategorizedArticles(lang)
+    const allArticles = getAllArticles()
+    const articlesForLang = allArticles.filter(article => article.lang === lang)
 
-    const categoryStats: CategoryStat[] = Object.keys(categorizedArticles).map(categoryName => ({
-        name: categoryName,
-        articleCount: categorizedArticles[categoryName].length,
-        // 可以在这里添加分类描述的逻辑
+    // 直接统计分类，避免创建完整的分类对象
+    const categoryCount = new Map<string, number>()
+
+    articlesForLang.forEach(article => {
+        const category = article.category || "Uncategorized"
+        categoryCount.set(category, (categoryCount.get(category) || 0) + 1)
+    })
+
+    // 转换为CategoryStat数组并排序
+    const categoryStats: CategoryStat[] = Array.from(categoryCount.entries()).map(([name, articleCount]) => ({
+        name,
+        articleCount,
         description: undefined
     }))
 

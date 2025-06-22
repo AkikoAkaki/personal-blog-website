@@ -1,19 +1,21 @@
 import Link from "next/link";
 import type { CategoryStat } from "@/types";
-import { getDictionary } from "@/lib/dictionaries";
 
 interface Props {
     category: CategoryStat;
     lang: string;
+    dict: {
+        article: string;
+        articles: string;
+    };
 }
 
 /**
- * CategoryCard - 分类卡片组件
+ * CategoryCard - 分类卡片组件（性能优化版本）
  * 用于在主页展示单个分类的信息，包含分类名称、文章数量和链接
+ * 字典通过props传入，避免重复调用getDictionary
  */
-const CategoryCard = ({ category, lang }: Props) => {
-    const dict = getDictionary(lang);
-
+const CategoryCard = ({ category, lang, dict }: Props) => {
     return (
         <Link
             href={`/${lang}/category/${encodeURIComponent(category.name)}`}
