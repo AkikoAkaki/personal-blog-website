@@ -20,11 +20,11 @@ const HomePage = async ({ params }: { params: Promise<{ lang: string }> }) => {
       
       <section className="mx-auto w-11/12 md:w-2/3 lg:w-1/2 mt-20 flex flex-col gap-16 mb-20">
         {/* 博客标题区域 */}
-        <header className="font-cormorantGaramond text-neutral-900 text-center">
+        <header className="font-cormorantGaramond text-neutral-900 dark:text-white text-center">
           <h1 className="text-[100px]" style={{ fontFamily: 'Cormorant Garamond, serif', fontWeight: 300 }}>
             Aki&apos;s Blog
           </h1>
-          <p className="font-poppins text-gray-600 text-lg mt-4">
+          <p className="font-poppins text-gray-600 dark:text-gray-300 text-lg mt-4">
             {dict.explore_subtitle}
           </p>
         </header>
@@ -44,7 +44,7 @@ const HomePage = async ({ params }: { params: Promise<{ lang: string }> }) => {
         {/* 如果没有分类，显示提示信息 */}
         {categoryStats.length === 0 && (
           <div className="text-center py-16">
-            <p className="font-poppins text-gray-500 text-lg">
+            <p className="font-poppins text-gray-500 dark:text-zinc-400 text-lg">
               {dict.no_articles_available}
             </p>
           </div>

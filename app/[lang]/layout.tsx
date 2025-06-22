@@ -1,6 +1,7 @@
 import type { Metadata } from "next"; // 导入 Next.js 的元数据类型，用于 SEO。
 import { Cormorant_Garamond, Poppins, Noto_Sans_SC, Noto_Serif_SC, Lora } from "next/font/google"; // 导入字体，以优化性能并避免布局偏移。
 import "./globals.css"; // 导入全局样式。
+import ThemeToggle from "@/components/ThemeToggle"; // 导入主题切换组件
 
 const cormorantGaramond = Cormorant_Garamond({
   subsets: ["latin"],
@@ -54,12 +55,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${cormorantGaramond.variable} ${poppins.variable} ${notoSansSC.variable} ${notoSerifSC.variable} ${lora.variable}`} // 将字体变量作为 className 应用，使其在 CSS 中可用。
+        className={`${cormorantGaramond.variable} ${poppins.variable} ${notoSansSC.variable} ${notoSerifSC.variable} ${lora.variable} bg-white dark:bg-black text-neutral-900 dark:text-white transition-colors duration-300`} // 改为纯黑背景和纯白文字，Zara风格高对比度
         suppressHydrationWarning={true} // 压制 hydration 警告，这通常用于处理服务器与客户端渲染的微小差异。
       >
         <main>
           {children}
         </main>
+
+        {/* 全局主题切换按钮 - 悬浮在右下角 */}
+        <ThemeToggle />
       </body>
     </html>
   );

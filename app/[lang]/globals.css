@@ -31,35 +31,35 @@ a {
  * 这种方式非常适合为无法直接添加 class 的内容（如 remark 的输出）提供样式。
  */
 .article > h1 {
-  @apply font-cormorantGaramond text-5xl tracking-tight;
+  @apply font-cormorantGaramond text-5xl tracking-tight text-neutral-900 dark:text-white;
 }
 
 .article > h2 {
-  @apply font-cormorantGaramond text-4xl tracking-tight;
+  @apply font-cormorantGaramond text-4xl tracking-tight text-neutral-900 dark:text-white;
 }
 
 .article > h3 {
-  @apply font-cormorantGaramond text-3xl tracking-tight;
+  @apply font-cormorantGaramond text-3xl tracking-tight text-neutral-900 dark:text-white;
 }
 
 .article > p {
-    @apply leading-relaxed;
+    @apply leading-relaxed text-neutral-900 dark:text-white;
 }
 
 .article > ol {
-  @apply list-decimal flex flex-col mx-10 gap-2;
+  @apply list-decimal flex flex-col mx-10 gap-2 text-neutral-900 dark:text-white;
 }
 
 .article > ul {
-  @apply list-disc flex flex-col mx-10 gap-2;
+  @apply list-disc flex flex-col mx-10 gap-2 text-neutral-900 dark:text-white;
 }
 
 .article > pre {
-  @apply bg-neutral-100 text-neutral-800 p-5 overflow-scroll font-mono;
+  @apply bg-neutral-100 dark:bg-zinc-900 text-neutral-800 dark:text-zinc-100 p-5 overflow-scroll font-mono border dark:border-zinc-700;
 }
 
 .article > blockquote {
-  @apply pl-10 text-neutral-600;
+  @apply pl-10 text-neutral-600 dark:text-zinc-300 border-l-4 border-gray-300 dark:border-zinc-600;
 }
 
 .article > p > img {
@@ -68,7 +68,12 @@ a {
 
 .article strong,
 .article b {
-  @apply font-medium;
+  @apply font-medium text-neutral-900 dark:text-white;
+  }
+  
+  /* 文章内链接样式 */
+  .article a {
+    @apply hover:underline transition-colors duration-300;
 }
 
 /* --- Footnotes Styling (Revised) --- */
@@ -84,7 +89,7 @@ a {
  * 设定整个脚注区域的顶部分隔线和基础字体样式。
  */
 .article .footnotes {
-  @apply mt-12 pt-6 border-t border-neutral-200 text-sm text-neutral-600;
+  @apply mt-12 pt-6 border-t border-neutral-200 dark:border-zinc-700 text-sm text-neutral-600 dark:text-zinc-400;
 }
 
 /*
@@ -102,11 +107,11 @@ a {
  * 3. 实现悬停在整个脚注项（li）上时，文本变色。
  */
 .article .footnotes li {
-  @apply mb-2;
+  @apply mb-2 text-neutral-600 dark:text-zinc-400;
 }
 
 .article .footnotes li:hover {
-  @apply text-[#3d7fdc];
+  @apply transition-colors duration-300;
 }
 
 /*
@@ -117,7 +122,7 @@ a {
 .article .footnotes li::before {
   content: '[' counter(footnote-counter) ']: ';
   counter-increment: footnote-counter;
-  @apply font-medium;
+  @apply font-medium text-neutral-600 dark:text-zinc-400;
 }
 
 /*
@@ -132,7 +137,11 @@ a {
  * 确保返回箭头链接本身在未悬停时没有下划线。
  */
 .article .footnote-backref {
-  @apply no-underline;
+  @apply no-underline transition-colors duration-300;
+  }
+  
+  .footnote-backref:hover {
+    @apply underline;
 }
 
 /* * 将 li 内的 p 元素设为 inline，以确保它和 ::before 前缀在同一行显示。
@@ -163,7 +172,7 @@ a {
   @apply absolute bottom-full left-1/2 block w-72 -translate-x-1/2;
   /* 向上增加一点间距 */
   @apply mb-2;
-  @apply rounded-md bg-neutral-800 px-3 py-2 text-sm font-normal text-white shadow-lg;
+  @apply rounded-md bg-neutral-800 dark:bg-zinc-800 px-3 py-2 text-sm font-normal text-white dark:text-zinc-100 shadow-lg;
   @apply opacity-0 invisible transition-opacity duration-200 ease-in-out;
   /* 确保 tooltip 在最上层 */
   z-index: 50;
@@ -176,4 +185,31 @@ a {
  */
 .article sup[data-tooltip]:hover::after {
   @apply visible opacity-100;
+}
+
+/* Article content links */
+.article-content a {
+  @apply no-underline transition-colors duration-300;
+}
+
+.article-content a:hover {
+  @apply underline;
+}
+
+/* Footnote links */
+.footnote-ref {
+  @apply font-bold transition-colors duration-300;
+}
+
+.footnote-ref:hover {
+  @apply underline;
+}
+
+/* Footnote back links */
+.footnote-backref {
+  @apply no-underline transition-colors duration-300;
+}
+
+.footnote-backref:hover {
+  @apply underline;
 }
