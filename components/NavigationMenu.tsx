@@ -16,6 +16,9 @@ interface NavigationMenuProps {
 const NavigationMenu = ({ currentLang, categories = [] }: NavigationMenuProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const isInitialRender = useRef(true);
+    const menuPanelId = 'navigation-menu-panel';
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -46,10 +49,29 @@ const NavigationMenu = ({ currentLang, categories = [] }: NavigationMenuProps) =
         };
     }, [isOpen]);
 
+    // 新增: 管理键盘焦点的副作用
+    useEffect(() => {
+        if (isInitialRender.current) {
+            isInitialRender.current = false;
+            return;
+        }
+
+        if (isOpen) {
+            const firstItem = menuRef.current?.querySelector('a');
+            firstItem?.focus();
+        } else {
+            triggerRef.current?.focus();
+        }
+    }, [isOpen]);
+
     return (
         <div className="relative" ref={menuRef}>
             <button
+                ref={triggerRef}
                 onClick={toggleMenu}
+                aria-haspopup="true"
+                aria-expanded={isOpen}
+                aria-controls={menuPanelId}
                 className="flex flex-row gap-2 place-items-center text-gray-600 dark:text-zinc-400 
                            hover:scale-105 transition-all duration-200 ease-out"
             >
@@ -62,6 +84,7 @@ const NavigationMenu = ({ currentLang, categories = [] }: NavigationMenuProps) =
 
             {/* 分类菜单列表 - 完美动画方案 */}
             <div
+                id={menuPanelId}
                 className={`absolute top-full left-0 mt-2 z-50 min-w-48
                             transition-all duration-300 ease-out transform-gpu
                             ${isOpen

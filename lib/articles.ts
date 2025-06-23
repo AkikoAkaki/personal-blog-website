@@ -1,10 +1,11 @@
 import fs from "fs"                      // 导入 Node.js 文件系统模块，用于读取文件
 import matter from "gray-matter"         // 导入 gray-matter 库，用于解析 Markdown 文件的前置元数据（frontmatter）
 import path from "path"                  // 导入 Node.js 路径模块，用于处理文件路径
+import { unified } from "unified"        // 导入 unified 核心
 import { remark } from "remark"          // 导入 remark 库，用于将 Markdown 转换为 HTML
-import moment from "moment"              // 导入 moment 库，用于日期格式化和比较
+import { format } from "date-fns"        // 导入 date-fns 库，用于日期格式化
+import remarkParse from "remark-parse"   // 导入 remark-parse
 import remarkRehype from 'remark-rehype' // 导入 remark-rehype 插件，将 remark AST 转换为 rehype AST
-import rehypeStringify from 'rehype-stringify' // 导入 rehype-stringify 插件，将 rehype AST 转换为 HTML 字符串
 import remarkGfm from "remark-gfm"
 import remarkAddTooltipData from "./remark-add-tooltip-data.js"
 
@@ -63,12 +64,8 @@ const getSortedArticles = (lang: string): ArticleItem[] => {
     const allArticles = getAllArticles()
     const articlesForLang = allArticles.filter(article => article.lang === lang)
 
-    return articlesForLang.sort((a, b) => {
-        const format = "YYYY-MM-DD"
-        const dateA = moment(a.date, format)
-        const dateB = moment(b.date, format)
-        return dateA.isBefore(dateB) ? 1 : -1
-    })
+    // 按日期降序排序。YYYY-MM-DD 格式的字符串可以直接用 localeCompare 进行比较，效率更高。
+    return articlesForLang.sort((a, b) => b.date.localeCompare(a.date))
 }
 
 /**
@@ -96,22 +93,20 @@ export const getCategorizedArticles = (lang: string): Record<string, ArticleItem
  * 获取单篇文章的完整内容（包括转换后的 HTML）,并附带所有可用翻译版本的信息。
  * @param {string} lang 语言代码
  * @param {string} id 文章的 slug
- * @returns {Promise} 包含文章完整信息的 Promise 对象
+ * @returns {Promise<ArticleData>} 包含文章完整信息的 Promise 对象
  */
 export const getArticleData = async (lang: string, id: string): Promise<ArticleData> => {
     const fullPath = path.join(baseArticlesDirectory, lang, `${id}.md`)
     const fileContents = fs.readFileSync(fullPath, "utf-8")   // 读取文件内容
     const matterResult = matter(fileContents) // 解析 Markdown 文件，分离元数据和正文
 
-    // 使用 remark -> rehype 管道将 Markdown 正文转换为 HTML
-    const processedContent = await remark()
+    // 使用 remark -> rehype 管道将 Markdown 转换为 hast 树
+    const processedContent = await unified()
+        .use(remarkParse)
         .use(remarkGfm)
-        .use(remarkAddTooltipData) // 2. 在 gfm 之后、html 之前使用它
-        .use(remarkRehype) // 转换为 rehype AST
-        .use(rehypeStringify) // 转换为 HTML 字符串
-        .process(matterResult.content)
-
-    const contentHtml = processedContent.toString()
+        .use(remarkAddTooltipData)
+        .use(remarkRehype) // 转换为 rehype AST (hast)
+        .run(remark().parse(matterResult.content)) // 执行转换
 
     const translationId = matterResult.data.translationId
     const translations: Record<string, string> = {}
@@ -135,10 +130,11 @@ export const getArticleData = async (lang: string, id: string): Promise<ArticleD
     // 返回符合 ArticleData 类型的完整对象
     return {
         id,
-        contentHtml,  // 转换后的 HTML 内容
+        content: processedContent,  // 之前是 contentHtml，现在是 content (hast 树)
         title: matterResult.data.title,
         category: matterResult.data.category,
-        date: moment(matterResult.data.date).format("YYYY-MM-DD"),  // 格式化日期
+        // 使用 date-fns 格式化日期，确保格式统一
+        date: format(new Date(matterResult.data.date), "yyyy-MM-dd"),
         translationId: matterResult.data.translationId,
         translations, // 所有可用翻译版本的信息
     }

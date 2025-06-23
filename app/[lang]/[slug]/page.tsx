@@ -2,6 +2,10 @@ import { getArticleData, getCategoryStats } from "@/lib/articles"; // 导入用�
 import { getDictionary } from "@/lib/dictionaries"; // 导入用于获取字典数据的函数。
 import LanguageSwitcher from "@/components/LanguageSwitcher"; // 导入语言切换组件
 import NavigationMenu from "@/components/NavigationMenu"; // 导入导航菜单组件
+import { unified } from "unified";
+import rehypeReact from "rehype-react";
+// 导入新的 JSX runtime
+import * as prod from 'react/jsx-runtime';
 
 /**
  * Article 页面是一个动态路由页面，用于显示单篇文章的内容。
@@ -40,14 +44,22 @@ const Article = async ({ params }: { params: Promise<{ slug: string, lang: strin
                 </h1>
 
                 {/*
-        * 文章正文容器。
-        * 使用 dangerouslySetInnerHTML 是因为文章内容是从 Markdown 转换来的 HTML 字符串。
-        * 在此项目中，内容源于本地文件，是可信的，因此可以安全使用。
-        */}
-                <article
-                    className="article"
-                    dangerouslySetInnerHTML={{ __html: articleData.contentHtml }}
-                />
+                 * 文章正文容器.
+                 * 我们使用 unified 和 rehype-react 将 hast (HTML AST) 树安全地渲染为 React 组件
+                 * 这种方法避免了 dangerouslySetInnerHTML，并允许我们未来用自定义组件覆盖 HTML 元素
+                 */}
+                <div className="article">
+                    {
+                        unified()
+                            .use(rehypeReact, {
+                                Fragment: prod.Fragment,
+                                jsx: prod.jsx,
+                                jsxs: prod.jsxs,
+                                // 在这里可以传递自定义组件
+                            })
+                            .processSync(articleData.content as any).result
+                    }
+                </div>
             </section>
         </>
     );
