@@ -60,20 +60,19 @@ const NavigationMenu = ({ currentLang, categories = [] }: NavigationMenuProps) =
                 <p>菜单</p>
             </button>
 
-            {/* 分类菜单列表 - 简化的单状态动画 */}
+            {/* 分类菜单列表 - 完美动画方案 */}
             <div
                 className={`absolute top-full left-0 mt-2 z-50 min-w-48
                             transition-all duration-300 ease-out transform-gpu
                             ${isOpen
-                        ? 'opacity-100 translate-y-0 pointer-events-auto'
-                        : 'opacity-0 -translate-y-4 pointer-events-none'
+                    ? 'translate-y-0 pointer-events-auto [clip-path:inset(0_0_0%_0)]'
+                    : '-translate-y-4 pointer-events-none [clip-path:inset(0_0_100%_0)]'
                     }`}
             >
-                {/* 毛玻璃容器 */}
-                <div className="backdrop-blur-xl bg-white/80 dark:bg-black/80 
-                                border border-white/20 dark:border-white/10
+                {/* 毛玻璃容器 - 优化透明度控制 */}
+                <div className={`backdrop-blur-xl bg-white/50 dark:bg-black/80 border border-white/20 dark:border-white/10
                                 rounded-xl shadow-2xl shadow-gray-500/20 dark:shadow-black/40
-                                ring-1 ring-black/5 dark:ring-white/5">
+                                ring-1 ring-black/5 dark:ring-white/5`}>
                     <div className="p-3">
                         {/* 首页链接 */}
                         <Link
