@@ -1,4 +1,5 @@
 import { JSX } from "react";
+import type { Root } from "hast";
 
 export type ArticleItem = {
     id: string
@@ -12,7 +13,7 @@ export type ArticleItem = {
 export type Footnotes = Record<string, string>;
 
 export type ArticleData = ArticleItem & {
-    content: any; // 从 string 类型的 HTML 改为 any，准备接收 hast 树
+    content: Root; // 从 string 类型的 HTML 改为 any，准备接收 hast 树
     translations: Record<string, string>; // 存储可用翻译的对象, e.g., { en: 'slug-en', zh: 'slug-zh' }
 }
 
