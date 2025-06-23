@@ -1,8 +1,7 @@
-import Link from "next/link"; // 导入 Next.js 的 Link 组件，用于客户端导航。
-import { ArrowLeftIcon } from "@heroicons/react/24/solid"; // 从 Heroicons 图标库导入左箭头图标。
-import { getArticleData } from "@/lib/articles"; // 导入用于获取单篇文章数据的函数。
+import { getArticleData, getCategoryStats } from "@/lib/articles"; // 导入用于获取单篇文章数据和分类统计的函数。
 import { getDictionary } from "@/lib/dictionaries"; // 导入用于获取字典数据的函数。
 import LanguageSwitcher from "@/components/LanguageSwitcher"; // 导入语言切换组件
+import NavigationMenu from "@/components/NavigationMenu"; // 导入导航菜单组件
 
 /**
  * Article 页面是一个动态路由页面，用于显示单篇文章的内容。
@@ -17,22 +16,21 @@ const Article = async ({ params }: { params: Promise<{ slug: string, lang: strin
     const articleData = await getArticleData(lang, decodedSlug); // 根据 URL 中的 slug 参数，异步获取文章的标题、HTML 内容等数据。
     const dict = getDictionary(lang);
 
+    // 获取分类数据用于菜单
+    const categoryStats = getCategoryStats(lang);
+
     return (
         <>
             <div className="w-11/12 md:w-1/2 mx-auto my-4 flex justify-end">
                 <LanguageSwitcher translations={articleData.translations} />
             </div>
             <section className="mx-auto w-11/12 md:w-[45rem] mt-20 flex flex-col gap-5">
-                {/* 页面顶部导航区，包含返回链接和文章日期 */}
+                {/* 页面顶部导航区 */}
                 <div className="flex justify-between font-poppins mb-8">
-                    <Link
-                        href={`/${lang}`}
-                        className="flex flex-row gap-2 place-items-center text-gray-600 dark:text-zinc-400 
-                                    hover:scale-105 hover:drop-shadow-sm transition-all duration-300 ease-out"
-                    >
-                        <ArrowLeftIcon width={20} />
-                        <p>{dict.back_to_home}</p>
-                    </Link>
+                    <NavigationMenu
+                        currentLang={lang}
+                        categories={categoryStats}
+                    />
                     <p className="text-gray-500 dark:text-zinc-400">{articleData.date.toString()}</p>
                 </div>
 
