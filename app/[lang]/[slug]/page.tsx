@@ -37,7 +37,7 @@ const Article = async ({ params }: { params: Promise<{ slug: string, lang: strin
                 </div>
 
                 {/* 文章主标题。 */}
-                <h1 className="font-cormorantGaramond text-6xl font-light mb-8 text-neutral-900 dark:text-white">
+                <h1 className="font-cormorantGaramond text-5xl lg:text-6xl font-light mb-8 text-neutral-900 dark:text-white">
                     {articleData.title}
                 </h1>
 

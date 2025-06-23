@@ -21,7 +21,7 @@ const HomePage = async ({ params }: { params: Promise<{ lang: string }> }) => {
       <section className="mx-auto w-11/12 md:w-2/3 lg:w-1/2 mt-20 flex flex-col gap-16 mb-20">
         {/* 博客标题区域 */}
         <header className="font-cormorantGaramond text-neutral-900 dark:text-white text-center">
-          <h1 className="text-[100px]" style={{ fontFamily: 'Cormorant Garamond, serif', fontWeight: 300 }}>
+          <h1 className="text-[80px] sm:text-[85px] md:text-[90px] lg:text-[100px]" style={{ fontFamily: 'Cormorant Garamond, serif', fontWeight: 300 }}>
             Aki&apos;s Blog
           </h1>
           <p className="font-poppins text-gray-600 dark:text-gray-300 text-lg mt-4">
