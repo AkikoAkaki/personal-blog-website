@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { ArrowLeftIcon } from "@heroicons/react/24/solid";
-import { getCategorizedArticles } from "@/lib/articles";
+import { getCategorizedArticles, getCategoryStats } from "@/lib/articles";
 import { getDictionary } from "@/lib/dictionaries";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import NavigationMenu from "@/components/NavigationMenu";
 
 /**
  * CategoryPage - 分类页面
@@ -20,6 +20,9 @@ const CategoryPage = async ({
     const categorizedArticles = getCategorizedArticles(lang);
     const articles = categorizedArticles[decodedCategoryName] || [];
 
+    // 获取分类数据用于菜单
+    const categoryStats = getCategoryStats(lang);
+
     const dict = getDictionary(lang);
 
     return (
@@ -29,16 +32,12 @@ const CategoryPage = async ({
             </div>
 
             <section className="mx-auto w-11/12 md:w-1/2 mt-20 flex flex-col gap-8 mb-20">
-                {/* 导航区域 */}
+                {/* 导航区域 - 使用统一的菜单组件 */}
                 <div className="flex justify-between items-center font-poppins mb-8">
-                    <Link
-                        href={`/${lang}`}
-                        className="flex flex-row gap-2 place-items-center text-gray-600 dark:text-zinc-400 
-                                    hover:scale-105 hover:drop-shadow-sm transition-all duration-300 ease-out"
-                    >
-                        <ArrowLeftIcon width={20} />
-                        <p>{dict.back_to_home}</p>
-                    </Link>
+                    <NavigationMenu
+                        currentLang={lang}
+                        categories={categoryStats}
+                    />
                 </div>
 
                 {/* 分类标题 */}
